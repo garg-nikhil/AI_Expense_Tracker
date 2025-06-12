@@ -1,0 +1,31 @@
+body {
+      font-family: sans-serif;
+        padding: 20px;
+          background: #f5f7fa;
+            max-width: 500px;
+              margin: auto;
+              }
+              h2 { text-align: center; }
+              input, button {
+                width: 100%;
+                  margin: 10px 0;
+                    padding: 12px;
+                      border-radius: 8px;
+                        border: 1px solid #ccc;
+                          font-size: 16px;
+                          }
+                          button {
+                            background-color: #4CAF50;
+                              color: white;
+                                border: none;
+                                  cursor: pointer;
+                                  }
+                                  button:disabled {
+                                    background-color: #ccc;
+                                    }
+                                    #message {
+                                      text-align: center;
+                                        margin-top: 15px;
+                                          font-weight: bold;
+                                          }
+}

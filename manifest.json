@@ -1,0 +1,16 @@
+{
+      "name": "AI Expense Tracker",
+        "short_name": "Expense Tracker",
+          "start_url": "./index.html",
+            "display": "standalone",
+              "background_color": "#ffffff",
+                "theme_color": "#4CAF50",
+                  "icons": [
+                      {
+                            "src": "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
+                                  "sizes": "512x512",
+                                        "type": "image/png"
+                                            }
+                                              ]
+                                              }
+}
