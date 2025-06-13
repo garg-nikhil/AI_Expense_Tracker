@@ -57,4 +57,33 @@ function showSummary() {
   });
 
   document.getElementById("message").textContent = "📩 Summary requested via Telegram!";
+
+  // Simulated category data – replace with Google Sheets pull later
+  const data = {
+    labels: ['Food', 'Travel', 'Shopping', 'Rent', 'Other'],
+    datasets: [{
+      label: 'Expenses',
+      data: [4500, 2200, 3000, 7000, 1200],
+      backgroundColor: ['#4CAF50', '#2196F3', '#FFC107', '#FF5722', '#9C27B0'],
+      hoverOffset: 4
+    }]
+  };
+
+  const config = {
+    type: 'pie',
+    data: data,
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom' },
+        title: { display: true, text: 'Spending by Category (Sample)' }
+      }
+    }
+  };
+
+  const canvas = document.getElementById("chart");
+  new Chart(canvas, config);
+  document.getElementById("message").textContent = "✅ Summary displayed below";
+
+
 }
