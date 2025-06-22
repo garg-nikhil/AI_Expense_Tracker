@@ -1,6 +1,6 @@
 const SHEET_ID = "1mi09p8ARKDclZWfCDC_e7qU2M2V_ZhUx_awT-bLKl_U";
-const WRITE_URL = "https://script.google.com/macros/s/AKfycbzvSH0oUwfAy4j8LpAmAC_UUmf6X2jSiopG4QHyrPUcf1581EMpmw_ceL8r7JwB_cCq/exec";
-const READ_URL = "https://script.google.com/macros/s/AKfycbwSIThYZtMgkhBKh-97HmZpceAVEJ-YWLGppvkw9HgIrM5sAbgIXt0XPp74v9pH38Uq/exec";
+const WRITE_URL = "https://script.google.com/macros/s/AKfycbyOik9Mjn-QehAvEJUByzP2Jc3ve5uWQYgyAWnM115cZaKi7oUY7JZkTfnL_WpFgogK/exec";
+const READ_URL = "https://script.google.com/macros/s/AKfycbyOik9Mjn-QehAvEJUByzP2Jc3ve5uWQYgyAWnM115cZaKi7oUY7JZkTfnL_WpFgogK/exec";
 
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("submitBtn").addEventListener("click", submitExpense);
@@ -18,7 +18,7 @@ async function submitExpense() {
   }
 
   try {
-    const res = await fetch(`${WRITE_URL}?text=${encodeURIComponent(text)}`, { method: "POST" });
+    const res = await fetch(`${WRITE_URL}?text=${encodeURIComponent(text)}`);
     const msg = await res.text();
     responseDiv.textContent = msg;
     textInput.value = "";
