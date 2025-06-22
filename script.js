@@ -1,89 +1,74 @@
-const APP_PIN = "2580";
-
-function checkPIN() {
-  const input = document.getElementById("pin-input").value;
-  if (input === APP_PIN) {
-    document.getElementById("lock-screen").style.display = "none";
-    document.getElementById("app").style.display = "block";
-  } else {
-    document.getElementById("pin-msg").textContent = "❌ Incorrect PIN";
-  }
-}
+const SHEET_ID = "1mi09p8ARKDclZWfCDC_e7qU2M2V_ZhUx_awT-bLKl_U";
+const WRITE_URL = "https://script.google.com/macros/s/PASTE_WRITE_DEPLOY_URL/exec";
+const READ_URL = "https://script.google.com/macros/s/PASTE_READ_DEPLOY_URL/exec";
 
 async function submitExpense() {
-  const amount = document.getElementById("amount").value;
-  const name = document.getElementById("name").value;
-  const date = document.getElementById("date").value;
+  const text = document.getElementById("expenseText").value;
+  const responseDiv = document.getElementById("response");
 
-  if (!amount || !name || !date) {
-    document.getElementById("message").textContent = "❌ Fill all fields!";
-    return;
-  }
-
-  const dateParts = new Date(date).toLocaleDateString("en-GB", {
-    day: 'numeric', month: 'long', year: 'numeric'
-  });
-
-  const text = `Spent ${amount} on ${name} on ${dateParts}`;
-
-  const response = await fetch('https://api.telegram.org/bot7751754561:AAFL9D33IUmujz-t6efKtd_UHa6jC6Y_J5U/sendMessage', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      chat_id: 1363653408,
-      text: text
-    })
-  });
-
-  if (response.ok) {
-    document.getElementById("message").textContent = "✅ Expense sent!";
-    document.getElementById("amount").value = '';
-    document.getElementById("name").value = '';
-    document.getElementById("date").value = '';
-  } else {
-    document.getElementById("message").textContent = "❌ Error sending!";
-  }
+  const res = await fetch(`${WRITE_URL}?text=${encodeURIComponent(text)}`, { method: "POST" });
+  const msg = await res.text();
+  responseDiv.textContent = msg;
+  document.getElementById("expenseText").value = "";
+  fetchExpenses();
 }
 
-// ---- summary chart ---
-function showSummary() {
-  fetch('https://api.telegram.org/bot7751754561:AAFL9D33IUmujz-t6efKtd_UHa6jC6Y_J5U/sendMessage', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      chat_id: 1363653408,
-      text: "/summary"
-    })
-  });
+async function fetchExpenses() {
+  const res = await fetch(READ_URL);
+  const data = await res.json();
+  const tbody = document.querySelector("#expensesTable tbody");
+  tbody.innerHTML = "";
 
-  document.getElementById("message").textContent = "📩 Summary requested via Telegram!";
+  const summary = {};
+  const categoryTotals = {};
 
-  // Simulated category data – replace with Google Sheets pull later
-  const data = {
-    labels: ['Food', 'Travel', 'Shopping', 'Rent', 'Other'],
-    datasets: [{
-      label: 'Expenses',
-      data: [4500, 2200, 3000, 7000, 1200],
-      backgroundColor: ['#4CAF50', '#2196F3', '#FFC107', '#FF5722', '#9C27B0'],
-      hoverOffset: 4
-    }]
-  };
+  for (let i = 1; i < data.length; i++) {
+    const [date, category, amount] = data[i];
+    if (!date || !amount) continue;
 
-  const config = {
-    type: 'pie',
-    data: data,
+    const row = document.createElement("tr");
+    row.innerHTML = `<td>${date}</td><td>${category}</td><td>${amount}</td>`;
+    tbody.appendChild(row);
+
+    const month = new Date(date).toLocaleString('default', { month: 'long', year: 'numeric' });
+    summary[month] = (summary[month] || 0) + parseFloat(amount);
+
+    categoryTotals[category] = (categoryTotals[category] || 0) + parseFloat(amount);
+  }
+
+  renderMonthlySummary(summary);
+  renderCategoryChart(categoryTotals);
+}
+
+function renderMonthlySummary(summary) {
+  const container = document.getElementById("monthlySummary");
+  container.innerHTML = Object.entries(summary)
+    .map(([month, total]) => `<p><strong>${month}:</strong> ₹${total.toFixed(2)}</p>`)
+    .join("");
+}
+
+function renderCategoryChart(data) {
+  const ctx = document.getElementById("categoryChart").getContext("2d");
+  if (window.chartInstance) window.chartInstance.destroy();
+
+  window.chartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: Object.keys(data),
+      datasets: [{
+        label: 'Total Spent (₹)',
+        data: Object.values(data),
+        backgroundColor: 'rgba(54, 162, 235, 0.6)'
+      }]
+    },
     options: {
       responsive: true,
       plugins: {
-        legend: { position: 'bottom' },
-        title: { display: true, text: 'Spending by Category (Sample)' }
+        legend: { display: false },
+        title: { display: true, text: 'Expenses by Category' }
       }
     }
-  };
-
-  const canvas = document.getElementById("chart");
-  new Chart(canvas, config);
-  document.getElementById("message").textContent = "✅ Summary displayed below";
-
-
+  });
 }
+
+fetchExpenses();
