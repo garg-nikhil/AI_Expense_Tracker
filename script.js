@@ -1,6 +1,6 @@
 const SHEET_ID = "1mi09p8ARKDclZWfCDC_e7qU2M2V_ZhUx_awT-bLKl_U";
-const WRITE_URL = "https://script.google.com/macros/s/PASTE_WRITE_DEPLOY_URL/exec";
-const READ_URL = "https://script.google.com/macros/s/PASTE_READ_DEPLOY_URL/exec";
+const WRITE_URL = "https://script.google.com/macros/s/AKfycbzvSH0oUwfAy4j8LpAmAC_UUmf6X2jSiopG4QHyrPUcf1581EMpmw_ceL8r7JwB_cCq/exec";
+const READ_URL = "https://script.google.com/macros/s/AKfycbwSIThYZtMgkhBKh-97HmZpceAVEJ-YWLGppvkw9HgIrM5sAbgIXt0XPp74v9pH38Uq/exec";
 
 async function submitExpense() {
   const text = document.getElementById("expenseText").value;
